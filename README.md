@@ -80,3 +80,16 @@ The two values you should copy from the user credential csv file:
 # 4. Trigger the Plan from UI
 Select "Start new run"
 ![image](https://user-images.githubusercontent.com/2050620/195015211-81b0f0d8-67f1-47f7-bb07-406a477ee463.png)
+
+# 5. Terminate the resources
+Go to Settings/Destruction and Deletion, click "Queue destroy plan":
+![image](https://user-images.githubusercontent.com/2050620/195016166-f1ec9291-d51a-43cd-a940-faf736f18051.png)
+
+Confirm by enter the namespace name:
+![image](https://user-images.githubusercontent.com/2050620/195016376-7d97d8c5-cbb4-4626-8277-1763f65646f7.png)
+
+Click "Confirm & Apply":
+![image](https://user-images.githubusercontent.com/2050620/195016673-ddb2ee65-1eed-4721-803f-c0765d3cccb1.png)
+
+You can see the apply finished: 
+![image](https://user-images.githubusercontent.com/2050620/195017239-2c95c55c-43d5-4c56-af6d-b5ceaf9eb3c3.png)
