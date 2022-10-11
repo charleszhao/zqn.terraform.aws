@@ -77,4 +77,6 @@ In this example, we have two variables in the vars.tf, so here we are going to c
 The two values you should copy from the user credential csv file:
 ![image](https://user-images.githubusercontent.com/2050620/195012986-566d32db-2718-4f6d-b822-7f334dd83535.png)
 
-
+# 4. Trigger the Plan from UI
+Select "Start new run"
+![image](https://user-images.githubusercontent.com/2050620/195015211-81b0f0d8-67f1-47f7-bb07-406a477ee463.png)
