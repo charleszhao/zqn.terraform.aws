@@ -128,10 +128,61 @@ Add another task 'Publish build artifacts':
 Keep the default value and save the pipeline:
 ![image](https://user-images.githubusercontent.com/2050620/195294203-67a1e4ab-c1a5-45ab-bbed-7f2923023a81.png)
 
-## 3.4 Create release pipeline
+## 3.4 Create a new service connection
+Go to project settings, then click 'New service connection':
+![image](https://user-images.githubusercontent.com/2050620/195303266-db67d494-afda-4d51-a8b6-84df0ae34114.png)
+
+Select 'AWS for Terraform' then click 'Next':
+![image](https://user-images.githubusercontent.com/2050620/195303845-91019166-8eb2-42fd-a38b-daf9f9d5b68b.png)
+
+Provide the access key and secret access key (same as Step-1), and key in the region, click 'Save':
+![image](https://user-images.githubusercontent.com/2050620/195304420-7d428eb1-12fa-4f78-969a-1bef99d66208.png)
+
+
+## 3.5 Create release pipeline
 Click 'New' and 'New release pipeline':
 ![image](https://user-images.githubusercontent.com/2050620/195296408-4b908a0e-c9c1-4a4c-a613-aaeb37c51a20.png)
 
+Click 'Empty job' as the emplate:
+![image](https://user-images.githubusercontent.com/2050620/195304858-c7b8d0b9-9923-447f-82b5-40cd535fe87f.png)
 
+Click 'Add an artifact' and select our build pipeline as the source:
+![image](https://user-images.githubusercontent.com/2050620/195305049-5c3de733-0784-4fb8-a200-39f561764da6.png)
 
+Click 'Tasks':
+![image](https://user-images.githubusercontent.com/2050620/195305295-a7905827-4b0c-45b3-9453-c6a4487b461a.png)
 
+Add new job 'Terraform tool installer':
+![image](https://user-images.githubusercontent.com/2050620/195305485-3dae7489-116a-48a2-a1be-d6168e9c2780.png)
+
+Keep the default value:
+![image](https://user-images.githubusercontent.com/2050620/195305849-dc5b389c-ad1b-4e20-9cc2-b5d2817dd271.png)
+
+Add new job 'Terraform':
+![image](https://user-images.githubusercontent.com/2050620/195305960-d8e84572-d617-4bb8-b46a-889b5b918d71.png)
+
+Configure the job as Terraform init:
+- 'Provider' to 'aws'
+- 'Display name' to 'Terraform : aws init'
+- under 'Amazon Web Services connection' select the new service connection we created in step-3.4
+- give a S3 bucket name which you created in AWS
+- give the key value 'tf/terraform.tfstate'
+![image](https://user-images.githubusercontent.com/2050620/195308843-3a777dc1-28a9-4131-ac26-6bedb0daf0fd.png)
+
+Add another 'Terraform' job and configrue it as Terraform plan:
+- 'Provider' to 'aws'
+- 'Display name' to 'Terraform : aws plan'
+- 'Command' to 'plan'
+- under 'Amazon Web Services connection' select the new service connection we created in step-3.4
+![image](https://user-images.githubusercontent.com/2050620/195312405-6f52e3f9-66ac-440c-abb6-b2a1c6b2dc09.png)
+
+Add another 'Terraform' job and configrue it as Terraform apply:
+- 'Provider' to 'aws'
+- 'Display name' to 'Terraform : aws apply'
+- 'Command' to 'apply'
+- under 'Amazon Web Services connection' select the new service connection we created in step-3.4
+![image](https://user-images.githubusercontent.com/2050620/195312684-1094b448-1758-46e8-a14f-22e7328edba4.png)
+
+Go to variables:
+
+Reference: [Terraform input variables using Azure DevOps](https://gaunacode.com/terraform-input-variables-using-azure-devops)
