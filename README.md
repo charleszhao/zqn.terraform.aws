@@ -84,6 +84,9 @@ Select "Start new run":
 Go to Settings/Destruction and Deletion, click "Queue destroy plan":
 ![image](https://user-images.githubusercontent.com/2050620/195016166-f1ec9291-d51a-43cd-a940-faf736f18051.png)
 
+After the plan completed, you can see the new EC2 instance in the AWS console:
+![image](https://user-images.githubusercontent.com/2050620/195476531-9d243e95-d2d6-458c-a234-08f070790c88.png)
+
 Confirm by enter the namespace name:
 ![image](https://user-images.githubusercontent.com/2050620/195016376-7d97d8c5-cbb4-4626-8277-1763f65646f7.png)
 
