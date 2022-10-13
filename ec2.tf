@@ -3,7 +3,10 @@ provider "aws" {
   access_key = var.AWS_ACCESS_KEY
   secret_key = var.AWS_SECRET_ACCESS_KEY
 }
-resource "aws_instance" "charles_ec2_terraform" {
+resource "aws_instance" "charles_ec2_from_terraform" {
   ami = "ami-065859ffdc7cf9882"
   instance_type = "t3.micro"
+  tags = {
+    name = "charles_ec2_from_terraform"
+  }
 }
