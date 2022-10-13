@@ -8,5 +8,12 @@ resource "aws_instance" "charles_ec2_from_terraform" {
   instance_type = "t3.micro"
   tags = {
     Name = "charles_ec2_from_terraform"
+    Environment = var.ENVIRONMENT
+    OS = "Windows"
+    Project-Code = "Demo"
   }
+  key_name = var.KEY_PAIR
+  subnet_id = var.SUBNET_ID
+  vpc_security_group_ids = [var.VPC_SECURITY_GROUP_IDS]
+  iam_instance_profile = var.IAM_INSTANCE_PROFILE//this will require iam:PassRole permission
 }
