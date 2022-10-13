@@ -197,3 +197,116 @@ The values are the same as in Step-1
 
 As you can see, the variable name in vars.tf is different from the variable name in the pipeline, this is because if we define Azure DevOps pipeline variables with a prefix of ```TF_VAR_```, they will get mapped into environment variables that Terrfaorm will pick them up. Azure DevOps will always transform pipeline variables to uppercase environment variables, so we have to define the variables with capital letters in Terraform configuration.
 Reference: [Terraform input variables using Azure DevOps](https://gaunacode.com/terraform-input-variables-using-azure-devops)
+
+# 4. Enhancement
+## 4.1 More configurations in ec2.tf
+```Terraform
+provider "aws" {
+  region = "ap-southeast-1"
+  access_key = var.AWS_ACCESS_KEY
+  secret_key = var.AWS_SECRET_ACCESS_KEY
+}
+resource "aws_instance" "charles_ec2_from_terraform" {
+  ami = "ami-065859ffdc7cf9882"
+  instance_type = "t3.micro"
+  tags = {
+    Name = "charles_ec2_from_terraform"
+    Environment = var.ENVIRONMENT
+    OS = "Windows"
+    Project-Code = "Demo"
+  }
+  key_name = var.KEY_PAIR
+  subnet_id = var.SUBNET_ID
+  vpc_security_group_ids = [var.VPC_SECURITY_GROUP_IDS]
+  iam_instance_profile = var.IAM_INSTANCE_PROFILE//this will require iam:PassRole permission
+}
+```
+Three things need to highligh here:
+1) You see the square brackets in ```vpc_security_group_ids```? This is because the configuration requies a set of string
+2) In order to set the ```iam_instance_profile```, AWS user we are using must have ```iam:PassRole``` permission, we are going to add this permission in Step-4.3
+3) Here we assigned the key-pair value, you need to create a key pair first, then assgin the value here
+
+## 4.2 More variables in vars.tf
+```Terraform
+variable "AWS_ACCESS_KEY" {}
+variable "AWS_SECRET_ACCESS_KEY" {}
+variable "ENVIRONMENT" {}
+variable "IAM_INSTANCE_PROFILE" {}
+variable "KEY_PAIR" {}
+variable "SUBNET_ID" {}
+variable "VPC_SECURITY_GROUP_IDS" {}
+```
+
+## 4.3 Add ```iam:PassRole``` permission
+As mentioned in Step-4.1, we need to have this permission when creating EC2 instance through Terraform. Go to the user group we created before in AWS console, click "Add permissions/Create inline policy":
+![image](https://user-images.githubusercontent.com/2050620/195566737-cf828e8a-6f03-4b04-b730-54c6c20c73cd.png)
+
+Search and choose "IAM" for the service:
+![image](https://user-images.githubusercontent.com/2050620/195567094-135201d6-2fd6-46b8-b1c4-3b960d714942.png)
+
+Filter and select "PassRole" for the actions:
+![image](https://user-images.githubusercontent.com/2050620/195567301-048e183e-11b0-4690-a898-2b3cbeba6ae2.png)
+
+Select "All resources" for the resources:
+![image](https://user-images.githubusercontent.com/2050620/195567446-b28277c1-8dcf-429b-918c-c4049099abab.png)
+
+Click "Specify request conditions", then click "Add condition":
+![image](https://user-images.githubusercontent.com/2050620/195567592-8914e02f-6262-44e2-9dd8-440b9776df37.png)
+
+Select the following in the popup:
+- Condition key: iam:PassedToService
+- Operator: StringEquals
+- Value: ec2.amazonaws.com
+![image](https://user-images.githubusercontent.com/2050620/195568037-9e12e0e6-c9b8-4c70-bb75-9d8d861c57f7.png)
+
+After click "Add" it will returen to the create policy page, click "Review policy" at the bottom:
+![image](https://user-images.githubusercontent.com/2050620/195568277-1e8962aa-0a26-4530-bff3-90f3cc630b09.png)
+
+Give a name to the policy and click "Create policy":
+![image](https://user-images.githubusercontent.com/2050620/195568591-259c4a02-ea00-495c-a206-5c2ff2f20d4a.png)
+
+Now we have the new policy under the user group permissions:
+![image](https://user-images.githubusercontent.com/2050620/195568721-a56236b4-d968-4c4a-9df6-1b277895b98a.png)
+
+## 4.4 Create variable group in Azure DevOps
+Go to Libray and click add variable group, give a name and add the following variables:
+![image](https://user-images.githubusercontent.com/2050620/195569725-399d2db5-3404-4128-91b3-88ee9dbc41af.png)
+
+## 4.5 Update release pipeline to use this variable group
+Go to the release pipeline, and select "Variables"/"Variable groups", then select "Link variable group":
+![image](https://user-images.githubusercontent.com/2050620/195570337-28cce757-2f57-48b4-b927-401a6bdf1db2.png)
+
+Select the variable group created jsut now, and select the stage, then click "Link":
+![image](https://user-images.githubusercontent.com/2050620/195570526-3cbc45fc-5627-4b65-a81b-b7856bce733d.png)
+
+Now we have all the variables:
+![image](https://user-images.githubusercontent.com/2050620/195570750-0d2374e8-607f-4225-b178-adadca9a5ab8.png)
+
+Delete all pipeline variables, becasue we are going to use the variable group:
+![image](https://user-images.githubusercontent.com/2050620/195570971-ecd50617-5ffd-4eb7-b330-e9eb1d6ff272.png)
+
+click "Save" to save the pipline changes.
+
+Now you can run the pipeline again.
+
+After the EC2 instance being created, we can login to the VM by using the key-pair we configured.
+
+Select Connect in the EC2 instance:
+![image](https://user-images.githubusercontent.com/2050620/195571992-d8ee5543-d733-494c-91b2-0a82c91bfe27.png)
+
+Click "RDP client" then "Connect using Fleet Manager", then "Fleet Manager Remote Desktop":
+![image](https://user-images.githubusercontent.com/2050620/195572463-10a0fcc6-c57e-4098-bd7e-2fc304f09509.png)
+
+It will open another browser tab, select "Key pair", the click "Browser", select the key pair download before and click "Open":
+![image](https://user-images.githubusercontent.com/2050620/195572838-13d18cdd-2138-4f12-9305-4c901add293b.png)
+
+Now click "Connect":
+![image](https://user-images.githubusercontent.com/2050620/195573098-0272483c-6232-4199-ab25-99161a6127b9.png)
+
+Now you can access your windows VM from the browser:
+![image](https://user-images.githubusercontent.com/2050620/195573239-431c439b-04fe-42c1-a89d-b704a71656a2.png)
+
+
+
+
+
