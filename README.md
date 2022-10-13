@@ -183,6 +183,11 @@ Add another 'Terraform' job and configrue it as Terraform apply:
 - under 'Amazon Web Services connection' select the new service connection we created in step-3.4
 ![image](https://user-images.githubusercontent.com/2050620/195312684-1094b448-1758-46e8-a14f-22e7328edba4.png)
 
-Go to variables:
+Go to variables, add these two variables:
+- TF_VAR_AWS_ACCESS_KEY
+- TF_VAR_AWS_SECRET_ACCESS_KEY
+![image](https://user-images.githubusercontent.com/2050620/195475574-fdcf2090-9a13-4daf-8f93-cbd256adbb81.png)
+The values are the same as in Step-1
 
+As you can see, the variable name in vars.tf is different from the variable name in the pipeline, this is because if we define Azure DevOps pipeline variables with a prefix of ```TF_VAR_```, they will get mapped into environment variables that Terrfaorm will pick them up. Azure DevOps will always transform pipeline variables to uppercase environment variables, so we have to define the variables with capital letters in Terraform configuration.
 Reference: [Terraform input variables using Azure DevOps](https://gaunacode.com/terraform-input-variables-using-azure-devops)
