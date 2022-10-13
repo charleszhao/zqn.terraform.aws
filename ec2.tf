@@ -7,6 +7,6 @@ resource "aws_instance" "charles_ec2_from_terraform" {
   ami = "ami-065859ffdc7cf9882"
   instance_type = "t3.micro"
   tags = {
-    name = "charles_ec2_from_terraform"
+    Name = "charles_ec2_from_terraform"
   }
 }
